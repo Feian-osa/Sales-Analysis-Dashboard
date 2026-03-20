@@ -1,0 +1,7 @@
+Python packages:
+streamlit
+pandas
+numpy
+scikit-learn
+plotly
+openpyxl
