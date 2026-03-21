@@ -1,7 +1,21 @@
 import streamlit as st 
 import pandas as pd # type: ignore
 import plotly.express as px # type: ignore
+import json
 
+
+# -------------------------
+# Load Linear Regression metrics
+# -------------------------
+with open('metrics.json') as f:
+    metrics = json.load(f)
+
+r2_train = metrics['r2_train']
+r2_test = metrics['r2_test']
+mae_value = metrics['Mean_Absolute_Error(MAE)']
+mse_value = metrics['Mean_Squared_Error(MSE)']
+rmse_value = metrics['Root_Mean_Squared_Error(RMSE)']
+overfit = metrics['overfit']
 
 # -------------------------
 # Load graph data from Excel
@@ -18,9 +32,17 @@ kpi_data = pd.read_excel(excel_file, sheet_name='KPI_DATA')
 # -------------------------
 # Dashboard Header
 # -------------------------
-st.title("Sales Dashboard")
+st.title("Sales Dashboard & Linear Regression Metrics")
 
-st.subheader("Performance Insights")
+st.subheader("Linear Regression Model Metrics")
+st.write(f"Train R²: {r2_train:.4f}")
+st.write(f"Test R²: {r2_test:.4f}")
+st.write(f"Mean_Absolute_Error(MAE): ${mae_value:.2f}")
+st.write(f"Mean_Squared_Error(MSE): ${mse_value:.2f}")
+st.write(f"Root_Mean_Squared_Error(RMSE): ${rmse_value:.2f}")
+st.write(overfit)
+
+st.subheader("Key Performance Indicators")
 st.table(kpi_data)
 
 # -------------------------
@@ -82,3 +104,13 @@ else:  # Bottom 10 Sub-Categories
     fig.update_xaxes(tickformat=",")
 
 st.plotly_chart(fig)
+
+
+
+
+##open terminal and run the following command to start the Streamlit app:
+# pip install streamlit 
+# pip install plotly
+#venv\Scripts\activate (create venv and activate it if you haven't already)
+# streamlit run "app.py"(the terminal should be in the same directory as app.py)
+#install streamlit and plotly if you haven't already:
