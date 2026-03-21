@@ -24,6 +24,7 @@ st.table(kpi_data)
 
 
 
+
 # sales_by_month should have columns: Month (1-12), Sales
 # Map numbers to month names
 month_map = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
