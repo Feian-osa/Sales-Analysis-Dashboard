@@ -20,12 +20,12 @@ top10_subcats=pd.read_excel(excel_file, sheet_name='Top_Sub_Products')
 least10_subcats=pd.read_excel(excel_file, sheet_name='Bottom_Sub_Products')
 kpi_data = pd.read_excel(excel_file, sheet_name='KPI_DATA')
 
-kpi_data.columns = kpi_data.columns.str.strip() 
 
+kpi_data.columns = kpi_data.columns.str.strip() 
 
 # Function to extract KPI values correctly
 def get_kpi_value(name):
-    return kpi_data.loc[kpi_data['Insights'] == name, 'Value'].values[0]
+    return kpi_data.loc[kpi_data['KPI'] == name, 'Value'].values[0]
 
 # Create KPI columns
 col1, col2, col3, col4 = st.columns(4)

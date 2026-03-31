@@ -1,11 +1,7 @@
 import streamlit as st 
 import pandas as pd # type: ignore
 import plotly.express as px # type: ignore
-import pickle
 
-model = pickle.load(open("model.pkl", "rb"))
-le_category = pickle.load(open("le_category.pkl", "rb"))
-le_region = pickle.load(open("le_region.pkl", "rb"))
 
 # -------------------------
 # Load graph data from Excel
@@ -20,20 +16,15 @@ top10_subcats=pd.read_excel(excel_file, sheet_name='Top_Sub_Products')
 least10_subcats=pd.read_excel(excel_file, sheet_name='Bottom_Sub_Products')
 kpi_data = pd.read_excel(excel_file, sheet_name='KPI_DATA')
 
+
 kpi_data.columns = kpi_data.columns.str.strip() 
-
-
-# Function to extract KPI values correctly
-def get_kpi_value(name):
-    return kpi_data.loc[kpi_data['Insights'] == name, 'Value'].values[0]
-
-# Create KPI columns
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Total Sales", f"${get_kpi_value('Total_Sales'):,.0f}")
-col2.metric("Total Orders", f"{get_kpi_value('Total_Orders'):,}")
-col3.metric("Total Profit", f"${get_kpi_value('Total_Profit'):,.0f}")
-col4.metric("Avg Order Value", f"${get_kpi_value('Average_Order_Value'):,.0f}")
+col1.metric("Total Sales", f"${kpi_data['Total_Sales'][0]:,.0f}")
+col2.metric("Total Orders", f"{kpi_data['Total_Orders'][0]:,}")
+col3.metric("Total Profit", f"${kpi_data['Total_Profit'][0]:,.0f}")
+col4.metric("Avg Order Value", f"${kpi_data['Average_Order_Value'][0]:,.0f}")
+
 
 
 # -------------------------
@@ -57,8 +48,8 @@ sales_by_month['Month Name'] = sales_by_month['Month'].map(month_map)
 # -------------------------
 
 # Create tabs for different graph options (alternative approach)
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Total Sales by Year", "Sales by Month", "Sales by Sub-Category", 
-     "Sales by Region", "All Products", "Top 10 Sub-Categories", "Bottom 10 Sub-Categories", "Prediction"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Total Sales by Year", "Sales by Month", "Sales by Sub-Category", 
+     "Sales by Region", "All Products", "Top 10 Sub-Categories", "Bottom 10 Sub-Categories"])
 
 with tab1:
     st.subheader("Total Orders by Year")
@@ -115,44 +106,3 @@ with tab7:
 
     fig.update_xaxes(tickformat=",")
     st.plotly_chart(fig, key="least10_subcats")
-
-
-with tab8:
-    st.subheader("🔮 Profit Prediction")
-
-    # User inputs
-    sales = st.number_input("Enter Sales", min_value=0.0)
-    discount = st.number_input("Enter Discount", min_value=0.0)
-
-    category = st.selectbox("Select Category", le_category.classes_)
-    region = st.selectbox("Select Region", le_region.classes_)
-
-    # Optional: calculate profit margin (if you keep it)
-    profit_margin = st.number_input("Profit Margin %", min_value=0.0)
-
-    if st.button("Predict Profit"):
-        # Encode inputs
-        category_encoded = le_category.transform([category])[0]
-        region_encoded = le_region.transform([region])[0]
-
-        # Create input
-        input_data = [[sales, profit_margin, discount, category_encoded, region_encoded]]
-
-        # Prediction
-        prediction = model.predict(input_data)
-
-        st.success(f"💰 Predicted Profit: ${prediction[0]:,.2f}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
